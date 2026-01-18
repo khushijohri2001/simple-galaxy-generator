@@ -11,12 +11,44 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.position.set(0, 0, 5);
+camera.position.set(0, 0, 3);
 
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0x0077ff });
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+
+// Particles
+const parameters = {
+  count: 1000,
+  size: 0.02
+};
+
+
+const galaxyGenerator = () => {
+  const particleGeometery = new THREE.BufferGeometry();
+const particles = new Float32Array(parameters.count * 3);
+
+for(let i =0; i< parameters.count; i++){
+  const i3 = i * 3;
+
+  particles[i3 + 0] = (Math.random() - 0.5) * 3;
+  particles[i3 + 1] = (Math.random() - 0.5) * 3;
+  particles[i3 + 2] = (Math.random() - 0.5) * 3;
+
+}
+
+particleGeometery.setAttribute("position", new THREE.BufferAttribute(particles, 3));
+
+const particleMaterial = new THREE.PointsMaterial({
+  size: parameters.size,
+  sizeAttenuation: true,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending,
+});
+
+const points = new THREE.Points(particleGeometery, particleMaterial);
+scene.add(points);
+}
+
+galaxyGenerator();
+
 
 // Renderer
 const canvas = document.getElementById("canvas");
