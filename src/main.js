@@ -1,5 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import GUI from "lil-gui";
+
+const gui = new GUI();
 
 // Scene
 const scene = new THREE.Scene();
@@ -20,10 +23,20 @@ const parameters = {
   size: 0.02
 };
 
+let particleGeometry = null;
+let particleMaterial = null;
+let points = null;
+
 
 const galaxyGenerator = () => {
-  const particleGeometery = new THREE.BufferGeometry();
-const particles = new Float32Array(parameters.count * 3);
+  if(points !== null){
+    particleGeometry.dispose();
+    particleMaterial.dispose();
+    scene.remove(points)
+  }
+
+  particleGeometry = new THREE.BufferGeometry();
+  const particles = new Float32Array(parameters.count * 3);
 
 for(let i =0; i< parameters.count; i++){
   const i3 = i * 3;
@@ -34,20 +47,25 @@ for(let i =0; i< parameters.count; i++){
 
 }
 
-particleGeometery.setAttribute("position", new THREE.BufferAttribute(particles, 3));
+particleGeometry.setAttribute("position", new THREE.BufferAttribute(particles, 3));
 
-const particleMaterial = new THREE.PointsMaterial({
+particleMaterial = new THREE.PointsMaterial({
   size: parameters.size,
   sizeAttenuation: true,
   depthWrite: false,
   blending: THREE.AdditiveBlending,
 });
 
-const points = new THREE.Points(particleGeometery, particleMaterial);
+points = new THREE.Points(particleGeometry, particleMaterial);
 scene.add(points);
 }
 
 galaxyGenerator();
+
+
+// Lil-gui
+gui.add(parameters, 'count').min(100).max(100000).step(100).onFinishChange(galaxyGenerator)
+gui.add(parameters, 'size').min(0.001).max(0.1).step(0.001).onFinishChange(galaxyGenerator)
 
 
 // Renderer
@@ -58,6 +76,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 // OrbitControls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
+
 
 // Resize Handler
 window.addEventListener("resize", () => {
