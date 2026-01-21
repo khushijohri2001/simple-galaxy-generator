@@ -20,7 +20,8 @@ camera.position.set(0, 0, 3);
 // Particles
 const parameters = {
   count: 1000,
-  size: 0.02
+  size: 0.02,
+  radius: 5
 };
 
 let particleGeometry = null;
@@ -41,9 +42,11 @@ const galaxyGenerator = () => {
 for(let i =0; i< parameters.count; i++){
   const i3 = i * 3;
 
-  particles[i3 + 0] = (Math.random() - 0.5) * 3;
-  particles[i3 + 1] = (Math.random() - 0.5) * 3;
-  particles[i3 + 2] = (Math.random() - 0.5) * 3;
+  const radius = Math.random() * parameters.radius;
+
+  particles[i3 + 0] = radius;
+  particles[i3 + 1] = 0;
+  particles[i3 + 2] = 0;
 
 }
 
@@ -66,7 +69,7 @@ galaxyGenerator();
 // Lil-gui
 gui.add(parameters, 'count').min(100).max(100000).step(100).onFinishChange(galaxyGenerator)
 gui.add(parameters, 'size').min(0.001).max(0.1).step(0.001).onFinishChange(galaxyGenerator)
-
+gui.add(parameters, 'radius').min(0.01).max(20).step(0.01).onFinishChange(galaxyGenerator)
 
 // Renderer
 const canvas = document.getElementById("canvas");
