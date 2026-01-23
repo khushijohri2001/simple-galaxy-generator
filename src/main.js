@@ -134,7 +134,7 @@ const clock = new THREE.Clock();
 // Animation Loop
 function animate() {
   requestAnimationFrame(animate);
-  points.rotation.y = clock.getElapsedTime() * 0.02;
+  points.rotation.y = clock.getElapsedTime() * -0.02;
   controls.update();
   renderer.render(scene, camera);
 }
